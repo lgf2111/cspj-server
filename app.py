@@ -30,14 +30,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120), nullable=False)
 
 
-# Create the database and tables within the application context
 with app.app_context():
     db.create_all()
 
-    # Check if the default user exists
     default_user = User.query.filter_by(username="admin").first()
 
-    # If the default user doesn't exist, add it
     if not default_user:
         default_password = generate_password_hash("admin", method="pbkdf2:sha256")
         new_user = User(username="admin", password=default_password)
