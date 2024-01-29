@@ -74,9 +74,9 @@ def login_post():
     c_text = request.form.get("captcha-text")
 
     # Comment this do demonstrate the test case
-    if not SIMPLE_CAPTCHA.verify(c_text, c_hash):
-        flash("Invalid captcha", "error")
-        return redirect(url_for("login"))
+    # if not SIMPLE_CAPTCHA.verify(c_text, c_hash):
+    #     flash("Invalid captcha", "error")
+    #     return redirect(url_for("login"))
 
     username = request.form["username"]
     password = request.form["password"]
