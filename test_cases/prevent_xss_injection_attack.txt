@@ -1,0 +1,8 @@
+Attack 
+
+Input below in comments field.
+<script>alert("YOU HAVE BEEN HACKED");</script>
+
+Defense
+
+Activate ModSecurity

@@ -10,6 +10,23 @@
 
 <body>
     <h2>Welcome, {{ current_user.username }}!</h2>
+    <!-- Comment Submission Form -->
+    <form action="{{ url_for('submit_comment') }}" method="post">
+        <label for="comment">Add a Comment:</label>
+        <input type="text" name="comment" id="comment" required>
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+
+    <!-- Display Comments -->
+    <div class="comments-section">
+        <h2>Comments:</h2>
+        <ul>
+            {% for comment in comments %}
+            <li>{{ comment.content|safe }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <ul>
         {% for file in files %}
         <li>

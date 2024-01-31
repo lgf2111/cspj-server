@@ -28,7 +28,7 @@ a:hover {
 }
 
 button {
-    background-color: #dc3545;
+    background-color: #007bff;
     color: #fff;
     padding: 10px 15px;
     border: none;
@@ -37,5 +37,28 @@ button {
 }
 
 button:hover {
-    background-color: #c82333;
+    background-color: #0056b3;
+}
+
+/* Comment Section Styles */
+.comments-section {
+    max-height: 200px;  /* Adjust the max height as needed */
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+/* Style for the Submit Button in the Comment Form */
+.submit-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
 }

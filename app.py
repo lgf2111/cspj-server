@@ -20,9 +20,10 @@ from flask_login import (
     current_user,
 )
 import os, string
+from datetime import datetime
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "your_secret_key"  # Change this to a secret key for session security
 
@@ -50,6 +51,13 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
 with app.app_context():
@@ -87,7 +95,9 @@ def index(req_path):
         return send_file(abs_path)
 
     files = os.listdir(abs_path)
-    return render_template("index.html", files=files)
+    comments = Comment.query.all()
+
+    return render_template("index.html", files=files, comments=comments)
 
 
 @app.route("/login")
@@ -108,9 +118,9 @@ def login_post():
     c_text = request.form.get("captcha-text")
 
     # Comment this do demonstrate the test case
-    if not SIMPLE_CAPTCHA.verify(c_text, c_hash):
-        flash("Invalid captcha", "error")
-        return redirect(url_for("login"))
+    # if not SIMPLE_CAPTCHA.verify(c_text, c_hash):
+    #     flash("Invalid captcha", "error")
+    #     return redirect(url_for("login"))
 
     username = request.form["username"]
     password = request.form["password"]
@@ -130,6 +140,19 @@ def login_post():
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
+
+@app.route("/submit_comment", methods=["POST"])
+@login_required
+def submit_comment():
+    comment_content = request.form.get("comment")
+
+    # Create a new comment and associate it with the current user
+    new_comment = Comment(content=comment_content, user_id=current_user.id)
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
