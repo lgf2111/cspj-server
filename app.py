@@ -37,15 +37,15 @@ CAPTCHA_CONFIG = {
 }
 
 # Comment this to demonstrate the test case
-# CAPTCHA_CONFIG.update(
-#     {
-#         "CAPTCHA_LENGTH": 6,
-#         "CAPTCHA_DIGITS": True,
-#         "EXCLUDE_VISUALLY_SIMILAR": True,
-#         "ONLY_UPPERCASE": False,
-#         "CHARACTER_POOL": string.ascii_lowercase,
-#     }
-# )
+CAPTCHA_CONFIG.update(
+    {
+        "CAPTCHA_LENGTH": 6,
+        "CAPTCHA_DIGITS": True,
+        "EXCLUDE_VISUALLY_SIMILAR": True,
+        "ONLY_UPPERCASE": False,
+        "CHARACTER_POOL": string.ascii_lowercase,
+    }
+)
 
 SIMPLE_CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 app = SIMPLE_CAPTCHA.init_app(app)
