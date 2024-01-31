@@ -26,20 +26,27 @@ from utils import find_free_port, initialize_database
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.secret_key = "your_secret_key"  # Change this to a secret key for session security
+app.secret_key = "secret_key"
 
 CAPTCHA_CONFIG = {
-    "SECRET_CAPTCHA_KEY": app.secret_key,  # use for JWT encoding/decoding
-    # CAPTCHA GENERATION SETTINGS
-    "EXPIRE_SECONDS": 60 * 10,  # takes precedence over EXPIRE_MINUTES
-    "CAPTCHA_IMG_FORMAT": "JPEG",  # 'PNG' or 'JPEG' (JPEG is 3X faster)
-    # Increase Complexity
-    "CAPTCHA_LENGTH": 6,
-    "CAPTCHA_DIGITS": True,
+    "SECRET_CAPTCHA_KEY": app.secret_key,
+    "CAPTCHA_LENGTH": 1,
+    "CAPTCHA_DIGITS": False,
     "EXCLUDE_VISUALLY_SIMILAR": True,
-    "ONLY_UPPERCASE": False,
-    "CHARACTER_POOL": string.ascii_lowercase,
+    "ONLY_UPPERCASE": True,
 }
+
+# Comment this to demonstrate the test case
+# CAPTCHA_CONFIG.update(
+#     {
+#         "CAPTCHA_LENGTH": 6,
+#         "CAPTCHA_DIGITS": True,
+#         "EXCLUDE_VISUALLY_SIMILAR": True,
+#         "ONLY_UPPERCASE": False,
+#         "CHARACTER_POOL": string.ascii_lowercase,
+#     }
+# )
+
 SIMPLE_CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 app = SIMPLE_CAPTCHA.init_app(app)
 
