@@ -34,7 +34,7 @@ CAPTCHA_CONFIG = {
     "EXPIRE_SECONDS": 60 * 10,  # takes precedence over EXPIRE_MINUTES
     "CAPTCHA_IMG_FORMAT": "JPEG",  # 'PNG' or 'JPEG' (JPEG is 3X faster)
     # Increase Complexity
-    "CAPTCHA_LENGTH": 2,
+    "CAPTCHA_LENGTH": 6,
     "CAPTCHA_DIGITS": True,
     "EXCLUDE_VISUALLY_SIMILAR": True,
     "ONLY_UPPERCASE": False,
