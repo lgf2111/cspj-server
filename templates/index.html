@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h2>Welcome, {{ current_user.username }}!</h2>
+    <h2>{{port}}: Welcome, {{ current_user.username }}!</h2>
     <!-- Comment Submission Form -->
     <form action="{{ url_for('submit_comment') }}" method="post">
         <label for="comment">Add a Comment:</label>

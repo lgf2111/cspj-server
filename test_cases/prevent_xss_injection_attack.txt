@@ -5,4 +5,5 @@ Input below in comments field.
 
 Defense
 
+Delete database
 Activate ModSecurity

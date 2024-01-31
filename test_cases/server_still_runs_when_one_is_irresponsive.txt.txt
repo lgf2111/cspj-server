@@ -1,0 +1,14 @@
+Attack
+
+Run app.py in 3 different terminals
+Configure nginx to proxy to 3 different ports
+Off the last 2 ports
+Enter the following in the url bar: http://127.0.0.1:8080/?exec=e/bin/bash
+It will be irresponsive
+Try to keep refreshing, it will still be irresponsive
+
+Defence
+
+On the last 2 ports
+Enter the following in the url bar: http://127.0.0.1:8080/?exec=e/bin/bash
+Try to keep refreshing, it will be responsive
