@@ -1,4 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import (
+    Flask,
+    abort,
+    render_template,
+    request,
+    redirect,
+    send_file,
+    url_for,
+    flash,
+    send_from_directory,
+)
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_simple_captcha import CAPTCHA
@@ -10,6 +20,7 @@ from flask_login import (
     logout_user,
     current_user,
 )
+import os
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -47,10 +58,26 @@ def load_user(user_id):
     return db.session.query(User).get(int(user_id))
 
 
-@app.route("/")
+@app.route("/", defaults={"req_path": ""})
+@app.route("/<path:req_path>")
 @login_required
-def index():
-    return render_template("index.html")
+def index(req_path):
+    BASE_DIR = "/"
+
+    # Joining the base and the requested path
+    abs_path = os.path.join(BASE_DIR, req_path)
+
+    # Return 404 if path doesn't exist
+    if not os.path.exists(abs_path):
+        return abort(404)
+
+    # Check if path is a file and serve
+    if os.path.isfile(abs_path):
+        return send_file(abs_path)
+
+    # Show directory contents
+    files = os.listdir(abs_path)
+    return render_template("index.html", files=files)
 
 
 @app.route("/login")
